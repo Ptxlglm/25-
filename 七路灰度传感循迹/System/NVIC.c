@@ -7,10 +7,12 @@
 #include "TIM2.h"
 
 // 主控参数设定区
-#define BASE_SPEED      70      // 线速度基准，跟据场地与小车性能调节
+#define BASE_SPEED      78      // 线速度基准，跟据场地与小车性能调节
 #define DEVIATION_MAX   5.0f    // 最大允许的轨迹误差
 
 extern PID_Controller pid_track;
+extern PID_Controller pid_left_speed;
+extern PID_Controller pid_right_speed;
  
 
 void TIM2_IRQHandler(void)
@@ -31,18 +33,23 @@ void TIM2_IRQHandler(void)
 		float correction = PID_Compute(&pid_track, 0.0f, deviation, 0.01f); // 目标0, 当前deviation, 周期10ms=0.01s
 
 		// 左右轮综合速度输出
-		int left_output  = BASE_SPEED + correction;
-		int right_output = BASE_SPEED - correction;
+		float left_target  = BASE_SPEED + correction;
+		float right_target = BASE_SPEED - correction;
+		
+		//速度PID闭环控制
+		float left_pwm = PID_Compute(&pid_left_speed, left_target,  Left_Speed,  0.01f);   // Left_Speed实际值
+    float right_pwm= PID_Compute(&pid_right_speed, right_target, Right_Speed, 0.01f);  // Right_Speed实际值
+
 
 		// 限制最大输出
-		if(left_output  > 100) left_output = 100;
-		if(left_output  < -100) left_output = -100;
-		if(right_output > 100) right_output = 100;
-		if(right_output < -100) right_output = -100;
+		if(left_pwm  > 88) left_pwm = 88;
+		if(left_pwm  < 68) left_pwm = 68;
+		if(right_pwm > 88) right_pwm = 88;
+		if(right_pwm < 68) right_pwm = 88;
 
 		// 设置电机速度与方向
-		LMotor_SetSpeed((int8_t)left_output);
-		RMotor_SetSpeed((int8_t)right_output);
+		LMotor_SetSpeed((int8_t)left_pwm);
+		RMotor_SetSpeed((int8_t)right_pwm);
 
 		// 可以加上失踪信号的处理，例如大偏差直接刹
 		if(deviation >= DEVIATION_MAX || deviation <= -DEVIATION_MAX)

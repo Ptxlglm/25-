@@ -13,9 +13,14 @@
 #define Kp_track    25.0f
 #define Ki_track    0.7f
 #define Kd_track    7.0f
-
 PID_Controller pid_track;
 
+// 速度环PID参数（要自行调试）
+#define Kp_speed    0.7f      
+#define Ki_speed    0.12f
+#define Kd_speed    0.10f
+PID_Controller pid_right_speed;
+PID_Controller pid_left_speed;
 
 // 主函数
 int main(void)
@@ -24,11 +29,12 @@ int main(void)
     GRAY_Sensor_Init();      // 灰度传感器接口
     Encoders_Init();         // 编码器接口
     Timer_Init();            // 10ms定时循环
-    PID_Init(&pid_track, Kp_track, Ki_track, Kd_track, 68.0f, 88.0f);    // 输出范围防止过调致饱和
-
-    // 全部先稳态
-    LMotor_SetSpeed(78);
-    RMotor_SetSpeed(78);
+    PID_Init(&pid_track, Kp_track, Ki_track, Kd_track, 68.0f, 88.0f);    // 添加输出范围，确保电机合适旋转
+		PID_Init(&pid_right_speed, Kp_speed, Ki_speed, Kd_speed, 68.0f, 88.0f);
+		PID_Init(&pid_left_speed, Kp_speed, Ki_speed, Kd_speed, 68.0f, 88.0f);
+    // 先稳态
+    LMotor_SetSpeed(0);
+    RMotor_SetSpeed(0);
 
     while (1)
     {
