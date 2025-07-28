@@ -45,7 +45,7 @@ void TIM2_IRQHandler(void)
 		if(left_pwm  > 88) left_pwm = 88;
 		if(left_pwm  < 68) left_pwm = 68;
 		if(right_pwm > 88) right_pwm = 88;
-		if(right_pwm < 68) right_pwm = 88;
+		if(right_pwm < 68) right_pwm = 68;
 
 		// 设置电机速度与方向
 		LMotor_SetSpeed((int8_t)left_pwm);

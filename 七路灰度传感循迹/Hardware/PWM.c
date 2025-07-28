@@ -9,7 +9,7 @@ void PWM_Init(void)
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8 | GPIO_Pin_7;
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7;
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
 	
 	TIM_InternalClockConfig(TIM4);
@@ -29,7 +29,7 @@ void PWM_Init(void)
 	TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
 	TIM_OCInitStructure.TIM_Pulse = 0;		//初始CCR
 	TIM_OC2Init(TIM4, &TIM_OCInitStructure);
-	TIM_OC3Init(TIM4, &TIM_OCInitStructure);
+	TIM_OC1Init(TIM4, &TIM_OCInitStructure);
 	
 	TIM_Cmd(TIM4, ENABLE);
 
@@ -40,8 +40,8 @@ void PWM_SetCompare2(uint16_t Compare)
 	TIM_SetCompare2(TIM4, Compare);   //设置CCR（0-100）->调节占空比（0-100%）—>调节直流电机转速
 }
 
-void PWM_SetCompare3(uint16_t Compare)
+void PWM_SetCompare1(uint16_t Compare)
 {
-	TIM_SetCompare3(TIM4, Compare);
+	TIM_SetCompare1(TIM4, Compare);
 }
 

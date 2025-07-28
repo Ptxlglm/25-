@@ -20,7 +20,7 @@ float Get_Track_Deviation(void) {
     
     // 读取所有传感器
     for (int i = 0; i < 7; i++) {
-        if (GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0 << i) == 0) {
+        if (GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0 << i) == 0) {      //=0是检测到黑线
             deviation += weights[i];
             active_count++;
         }
